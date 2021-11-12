@@ -1,4 +1,3 @@
-
 "use strict";
 const DIST = false;
 const EXT = DIST ? '.min.js' : '.js';
@@ -6,6 +5,7 @@ const EXT = DIST ? '.min.js' : '.js';
 function loadScript(path, name) {
 	return loadScriptFromPath(path + 'lib/' + name + EXT)
 }
+
 function loadScriptFromPath(url) {
 	return new Promise((resolve, reject) => {
 		// Window
@@ -33,7 +33,7 @@ function currentScriptPath() {
 	} catch (e) {
 		let stack = e.stack;
 		let line = (stack.indexOf('@') !== -1)
-			? stack.split('@')[1].split('\n')[0]  // Chrome and IE
+			? stack.split('@')[1].split('\n')[0] // Chrome and IE
 			: stack.split('(')[1].split(')')[0]; // Firefox
 		return line.substring(0, line.lastIndexOf('/')) + '/';
 	}
@@ -289,8 +289,7 @@ class Unarchiver {
 		return (header[0] == 0x52) // Always this first
 			&&
 			(
-				(header[1] == 0x45 && header[2] == 0x7E && header[3] == 0x5E)
-				||
+				(header[1] == 0x45 && header[2] == 0x7E && header[3] == 0x5E) ||
 				(header[1] == 0x61 && header[2] == 0x72 && header[3] == 0x21 && header[4] == 0x1A && header[5] == 0x07 && ((header[6] == 0x00) || (header[6] == 0x01 && header[7] == 0x00)))
 			);
 	}
