@@ -2,6 +2,7 @@
 # Define directories
 SRCDIR = src
 DISTDIR = dist
+BUILDDIR = build
 LIBDIR = lib
 
 # Define target files
@@ -14,7 +15,10 @@ MAIN = unarchiver
 .PHONY: minify clean run
 .SUFFIXES: .min.js .js
 
-default: minify
+default: build
+
+build: minify
+	cd $(DISTDIR) && zip -FSr ../$(BUILDDIR)/$(MAIN).zip *
 
 minify: $(JS_FILES)
 	@sed -i 's/const DIST=!1/const DIST=1/g' $(DISTDIR)/$(MAIN).min.js
