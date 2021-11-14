@@ -49,10 +49,10 @@ class Unarchiver {
 
 	static async load(formats = null) {
 		formats = formats || ['zip', 'rar', 'tar', 'gz', 'xz', 'bz2']
-		return Promise.all(formats.map(Unarchiver._load_format));
+		return Promise.all(formats.map(this.#load_format));
 	}
 
-	static async _load_format(format) {
+	static async #load_format(format) {
 		if (format in Unarchiver.loadedFormats) {
 			// Already loaded or loading
 			await Unarchiver.loadedFormats[format]
@@ -97,6 +97,7 @@ class Unarchiver {
 	}
 
 	static open(file, password = null) {
+		let _this = this;
 		return new Promise((resolve, reject) => {
 			let file_name = file.name;
 			password = password || null;
@@ -106,16 +107,16 @@ class Unarchiver {
 				let array_buffer = reader.result;
 
 				// Decompress
-				if (Unarchiver.isGzip(array_buffer)) {
-					await Unarchiver._load_format('gz');
+				if (_this.#isGzip(array_buffer)) {
+					await _this.#load_format('gz');
 					array_buffer = pako.inflate(array_buffer).buffer
 
-				} else if (Unarchiver.isXZ(array_buffer)) {
-					await Unarchiver._load_format('xz');
+				} else if (_this.#isXZ(array_buffer)) {
+					await _this.#load_format('xz');
 					array_buffer = toXZ(new Uint8Array(array_buffer), 0, 0, 0, 2 ** 28).buffer;
 
-				} else if (Unarchiver.isBZ2(array_buffer)) {
-					await Unarchiver._load_format('bz2');
+				} else if (_this.#isBZ2(array_buffer)) {
+					await _this.#load_format('bz2');
 					array_buffer = bz2.decompress(new Uint8Array(array_buffer)).buffer;
 				}
 
@@ -124,23 +125,23 @@ class Unarchiver {
 
 				// Unarchive
 				let archive_type = null;
-				if (Unarchiver.isRarFile(array_buffer)) {
+				if (_this.#isRarFile(array_buffer)) {
 					archive_type = 'rar';
-					await Unarchiver._load_format(archive_type);
-					handle = Unarchiver._rarOpen(file_name, password, array_buffer);
-					entries = Unarchiver._rarGetEntries(handle);
+					await _this.#load_format(archive_type);
+					handle = _this.#rarOpen(file_name, password, array_buffer);
+					entries = _this.#rarGetEntries(handle);
 
-				} else if (Unarchiver.isZipFile(array_buffer)) {
+				} else if (_this.#isZipFile(array_buffer)) {
 					archive_type = 'zip';
-					await Unarchiver._load_format(archive_type);
-					handle = await Unarchiver._zipOpen(file_name, password, array_buffer);
-					entries = Unarchiver._zipGetEntries(handle);
+					await _this.#load_format(archive_type);
+					handle = await _this.#zipOpen(file_name, password, array_buffer);
+					entries = _this.#zipGetEntries(handle);
 
-				} else if (Unarchiver.isTarFile(array_buffer)) {
+				} else if (_this.#isTarFile(array_buffer)) {
 					archive_type = 'tar';
-					await Unarchiver._load_format(archive_type);
-					handle = Unarchiver._tarOpen(file_name, password, array_buffer);
-					entries = Unarchiver._tarGetEntries(handle);
+					await _this.#load_format(archive_type);
+					handle = _this.#tarOpen(file_name, password, array_buffer);
+					entries = _this.#tarGetEntries(handle);
 
 				} else {
 					throw new Error('The archive type is unknown');
@@ -164,7 +165,7 @@ class Unarchiver {
 		});
 	}
 
-	static archiveClose(archive) {
+	static close(archive) {
 		archive.file_name = null;
 		archive.archive_type = null;
 		archive.array_buffer = null;
@@ -172,7 +173,7 @@ class Unarchiver {
 		archive.handle = null;
 	}
 
-	static _rarOpen(file_name, password, array_buffer) {
+	static #rarOpen(file_name, password, array_buffer) {
 		return {
 			file_name: file_name,
 			array_buffer: array_buffer,
@@ -186,7 +187,7 @@ class Unarchiver {
 		};
 	}
 
-	static async _zipOpen(file_name, password, array_buffer) {
+	static async #zipOpen(file_name, password, array_buffer) {
 		return {
 			file_name: file_name,
 			array_buffer: array_buffer,
@@ -195,7 +196,7 @@ class Unarchiver {
 		};
 	}
 
-	static _tarOpen(file_name, password, array_buffer) {
+	static #tarOpen(file_name, password, array_buffer) {
 		return {
 			file_name: file_name,
 			array_buffer: array_buffer,
@@ -203,7 +204,7 @@ class Unarchiver {
 		};
 	}
 
-	static _rarGetEntries(rar_handle) {
+	static #rarGetEntries(rar_handle) {
 		return Object.entries(readRARFile(rar_handle.rar_files, rar_handle.password)).map(([_, item]) => {
 			let name = item.name;
 			let is_file = item.is_file;
@@ -231,7 +232,7 @@ class Unarchiver {
 		})
 	}
 
-	static _zipGetEntries(zip_handle) {
+	static #zipGetEntries(zip_handle) {
 		return Object.entries(zip_handle.zip.files).map(([_, item]) => {
 			let name = item.name;
 			let is_file = !item.dir;
@@ -252,7 +253,7 @@ class Unarchiver {
 		});
 	}
 
-	static _tarGetEntries(tar_handle) {
+	static #tarGetEntries(tar_handle) {
 		// Get all the entries
 		return tarGetEntries(tar_handle.file_name, tar_handle.array_buffer).map((entry) => {
 			let name = entry.name;
@@ -279,7 +280,7 @@ class Unarchiver {
 
 	}
 
-	static isRarFile(array_buffer) {
+	static #isRarFile(array_buffer) {
 		// Just return false if the file is smaller than the header
 		if (array_buffer.byteLength < 8)
 			return false;
@@ -295,27 +296,27 @@ class Unarchiver {
 			);
 	}
 
-	static isZipFile(array_buffer) {
-		return Unarchiver.checkHeader([0x50, 0x4b, 0x03, 0x04], array_buffer)
+	static #isZipFile(array_buffer) {
+		return this.#checkHeader([0x50, 0x4b, 0x03, 0x04], array_buffer)
 	}
 
-	static isTarFile(array_buffer) {
-		return Unarchiver.checkHeader([0x75, 0x73, 0x74, 0x61, 0x72], array_buffer, 257, 512)
+	static #isTarFile(array_buffer) {
+		return this.#checkHeader([0x75, 0x73, 0x74, 0x61, 0x72], array_buffer, 257, 512)
 	}
 
-	static isGzip(array_buffer) {
-		return Unarchiver.checkHeader([0x1F, 0x8B, 0x08], array_buffer)
+	static #isGzip(array_buffer) {
+		return this.#checkHeader([0x1F, 0x8B, 0x08], array_buffer)
 	}
 
-	static isBZ2(array_buffer) {
-		return Unarchiver.checkHeader([0x42, 0x5A, 0x68], array_buffer)
+	static #isBZ2(array_buffer) {
+		return this.#checkHeader([0x42, 0x5A, 0x68], array_buffer)
 	}
 
-	static isXZ(array_buffer) {
-		return Unarchiver.checkHeader([0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00], array_buffer)
+	static #isXZ(array_buffer) {
+		return this.#checkHeader([0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00], array_buffer)
 	}
 
-	static checkHeader(expectedHeader, array_buffer, offset = 0, minBytes = null) {
+	static #checkHeader(expectedHeader, array_buffer, offset = 0, minBytes = null) {
 		let m = offset + expectedHeader.length;
 		if (array_buffer.byteLength < (minBytes || m))
 			return false;
