@@ -8,8 +8,7 @@ function loadScript(path, name) {
 
 function loadScriptFromPath(url) {
 	return new Promise((resolve, reject) => {
-		// Window
-		if (typeof window === 'object') {
+		if (typeof window === 'object') { // Window
 			let script = document.createElement('script');
 			script.type = 'text/javascript';
 			script.src = url;
@@ -54,44 +53,47 @@ class Unarchiver {
 	}
 
 	static async _load_format(format) {
-
-		if (Unarchiver.loadedFormats.includes(format))
-			return; // Already loaded
-
-		Unarchiver.loadedFormats.push(format);
+		if (format in Unarchiver.loadedFormats) {
+			// Already loaded or loading
+			await Unarchiver.loadedFormats[format]
+			return;
+		}
 
 		let path = currentScriptPath();
 
-		switch (format) {
-			case 'zip':
-				await loadScript(path, 'jszip');
-				break;
+		return Unarchiver.loadedFormats[format] = new Promise(async (resolve, reject) => {
+			switch (format) {
+				case 'zip':
+					await loadScript(path, 'jszip');
+					break;
 
-			case 'rar':
-				unrarMemoryFileLocation = path + 'lib/libunrar.js.mem';
-				await loadScript(path, 'libunrar');
-				await unrarReady;
-				break;
+				case 'rar':
+					unrarMemoryFileLocation = path + 'lib/libunrar.js.mem';
+					await loadScript(path, 'libunrar');
+					await unrarReady;
+					break;
 
-			case 'tar':
-				await loadScript(path, 'libuntar');
-				break;
+				case 'tar':
+					await loadScript(path, 'libuntar');
+					break;
 
-			case 'gz':
-				await loadScript(path, 'pako_inflate');
-				break;
+				case 'gz':
+					await loadScript(path, 'pako_inflate');
+					break;
 
-			case 'xz':
-				await loadScript(path, 'xz');
-				break;
+				case 'xz':
+					await loadScript(path, 'xz');
+					break;
 
-			case 'bz2':
-				await loadScript(path, 'bz2');
-				break;
+				case 'bz2':
+					await loadScript(path, 'bz2');
+					break;
 
-			default:
-				throw new Error("Unknown archive format '" + format + "'.");
-		}
+				default:
+					throw new Error("Unknown archive format '" + format + "'.");
+			}
+			resolve()
+		})
 	}
 
 	static open(file, password = null) {
@@ -256,7 +258,6 @@ class Unarchiver {
 			let name = entry.name;
 			let is_file = entry.is_file;
 			let size = entry.size;
-
 			return {
 				name: name,
 				is_file: is_file,
@@ -328,4 +329,5 @@ class Unarchiver {
 	}
 }
 // Set static class variables
-Unarchiver.loadedFormats = [];
+// Stores a dictionary of promises, allowing for multiple blocking calls to load
+Unarchiver.loadedFormats = {};
