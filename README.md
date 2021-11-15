@@ -1,11 +1,11 @@
-## Unarchiver.js
+# Unarchiver.js
 The simple, all-in-one, JavaScript unarchiver that runs in your browser!
 
-Supports zip, rar, tar, tar.gz, tar.xz, and tar.bz2 archive formats. Tested on Chrome, Firefox, and Edge.
+Supports .zip, .rar, .tar, .tar.gz, .tar.xz, and .tar.bz2 archive formats. Tested on Chrome, Firefox, and Edge.
 
-### Getting Started
+## Getting Started
 
-#### Include source on page (HTML)
+### Include source on page (HTML)
 ```html
 <!-- Local (remember to extract all files) -->
 <script src="./unarchiver.min.js"></script>
@@ -14,7 +14,7 @@ Supports zip, rar, tar, tar.gz, tar.xz, and tar.bz2 archive formats. Tested on C
 <script src="https://xenova.github.io/unarchiver-js/dist/unarchiver.min.js"></script>
 ```
 
-#### Usage (JavaScript)
+### Usage (JavaScript)
 ```javascript
 // Load file (e.g., from URL or input element)
 let file = new File(...);
@@ -30,12 +30,12 @@ Unarchiver.open(file).then(async function (archive) {
 });
 ```
 
-### Demo
+## Demo
 Check out https://xenova.github.io/unarchiver-js/#demo for a demonstration of the library's functionality.
 
-### Usage
+## Usage
 
-#### Methods
+### Methods
 <table>
    <thead>
       <tr>
@@ -46,7 +46,7 @@ Check out https://xenova.github.io/unarchiver-js/#demo for a demonstration of th
    </thead>
    <tbody>
       <tr>
-         <th><code>Unarchiver.load(formats=null)</code></th>
+         <th><code>Unarchiver.load(formats)</code></th>
          <td>Returns a <a
             href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> which will be fulfilled when the specified
             formats have been loaded. <code>format</code> is an array of formats to be loaded,
@@ -114,7 +114,7 @@ Unarchiver.open(file).then(function(archive) {
    </tbody>
 </table>
 
-#### Archive Entries
+### Archive Entries
 Each achive entry object contains the following attributes:
 <pre>{
     "name": String,
@@ -154,9 +154,9 @@ Unarchiver.open(file).then(async function (archive) {
 });
 ```
 
-### Examples
+## Examples
 
-#### Read remote archive (from URL)
+### Read remote archive (from URL)
 ```javascript
 let url = 'https://xenova.github.io/unarchiver-js/test_files/file.zip';
 fetch(url).then(async function (data) {
@@ -175,7 +175,7 @@ fetch(url).then(async function (data) {
 	}
 });
 ```
-#### Read local archive (from input element)
+### Read local archive (from input element)
 ```html
 <input type="file" id="example-file">
 <button onclick="readFile()">Read</button><br>
@@ -204,7 +204,7 @@ function readFile() {
 </script>
 ```
 
-### Credits
+## Credits
 - Inspired by the [Uncompress](https://github.com/workhorsy/uncompress.js) library by [workhorsy](https://github.com/workhorsy)
 - Uses:
   - [JSZip](https://github.com/Stuk/jszip) for unarchiving zip files
