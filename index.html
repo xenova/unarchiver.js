@@ -68,7 +68,7 @@
 							your browser!</p>
 						<div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
 							<a class="btn btn-primary btn-lg px-4 me-sm-3" href="build/unarchiver.zip">Download</a>
-							<a class="btn btn-outline-light btn-lg px-4" href="https://github.com/xenova/unarchiver-js">
+							<a class="btn btn-outline-light btn-lg px-4" href="https://github.com/xenova/unarchiver.js">
 								<i class="bi bi-github"></i> View Source
 							</a>
 						</div>
@@ -92,7 +92,7 @@
 &lt;script src=&quot;./unarchiver.min.js&quot;&gt;&lt;/script&gt;
 
 &lt;!-- or Remote --&gt;
-&lt;script src=&quot;https://xenova.github.io/unarchiver-js/dist/unarchiver.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+&lt;script src=&quot;https://xenova.github.io/unarchiver.js/dist/unarchiver.min.js&quot;&gt;&lt;/script&gt;</code></pre>
 				</div>
 
 				<div class="col-lg-6 mb-4 mb-lg-0">
@@ -289,7 +289,7 @@ Unarchiver.open(file).then(function(archive) {
 			<div class="row gx-5">
 				<div class="col-lg-12 mb-3">
 					<h4 class="fw-bolder">Read remote archive (from URL)</h4>
-					<pre><code class="language-js">let url = 'https://xenova.github.io/unarchiver-js/test_files/file.zip';
+					<pre><code class="language-js">let url = 'https://xenova.github.io/unarchiver.js/test_files/file.zip';
 fetch(url).then(async function (data) {
 	// Load file from URL
 	let blob = await data.blob();
