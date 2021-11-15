@@ -11,7 +11,7 @@ Supports .zip, .rar, .tar, .tar.gz, .tar.xz, and .tar.bz2 archive formats. Teste
 <script src="./unarchiver.min.js"></script>
 
 <!-- or Remote -->
-<script src="https://xenova.github.io/unarchiver-js/dist/unarchiver.min.js"></script>
+<script src="https://xenova.github.io/unarchiver.js/dist/unarchiver.min.js"></script>
 ```
 
 ### Usage (JavaScript)
@@ -31,7 +31,7 @@ Unarchiver.open(file).then(async function (archive) {
 ```
 
 ## Demo
-Check out https://xenova.github.io/unarchiver-js/#demo for a demonstration of the library's functionality.
+Check out https://xenova.github.io/unarchiver.js/#demo for a demonstration of the library's functionality.
 
 ## Usage
 
@@ -158,7 +158,7 @@ Unarchiver.open(file).then(async function (archive) {
 
 ### Read remote archive (from URL)
 ```javascript
-let url = 'https://xenova.github.io/unarchiver-js/test_files/file.zip';
+let url = 'https://xenova.github.io/unarchiver.js/test_files/file.zip';
 fetch(url).then(async function (data) {
 	// Load file from URL
 	let blob = await data.blob();
