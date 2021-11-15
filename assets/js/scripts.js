@@ -1,3 +1,4 @@
+"use strict";
 let dropzone = document.getElementById('dropzone')
 let displayFiles = document.getElementById('display-files')
 
@@ -5,7 +6,7 @@ let dropzoneFile = document.getElementById('file')
 dropzoneFile.addEventListener('dragenter', () => dropzone.classList.add('dragging'));
 dropzoneFile.addEventListener('dragleave', () => dropzone.classList.remove('dragging'));
 dropzoneFile.addEventListener('drop', () => dropzone.classList.remove('dragging'));
-dropzoneFile.oninput = async () => {
+dropzoneFile.addEventListener('input', async () => {
 	await Promise.all(Array.from(dropzoneFile.files).map(async (file) => {
 		let archive = await Unarchiver.open(file);
 
@@ -36,7 +37,7 @@ dropzoneFile.oninput = async () => {
 
 	}));
 	dropzoneFile.value = null;
-};
+});
 
 let modalElement = document.getElementById('content-modal');
 let myModal = new bootstrap.Modal(modalElement)
