@@ -1,0 +1,44 @@
+#dropzone {
+    transition: all 0.1s ease-out;
+    background-color: white;
+    height: 200px;
+    border-radius: 5px;
+}
+
+#dropzone>label {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+#dropzone>label>span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-size: 20px;
+}
+
+#file {
+    opacity: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+
+#dropzone.dragging,
+#dropzone:hover {
+    background-color: var(--bs-light) !important;
+}
+
+.small-code {
+    font-size: 14px !important;
+}
+
+#display-files {
+	height: 200px;
+}
