@@ -1,7 +1,7 @@
 # Unarchiver.js
 The simple, all-in-one, JavaScript unarchiver that runs in your browser!
 
-Supports .zip, .rar, .tar, .tar.gz, .tar.xz, and .tar.bz2 archive formats. Tested on Chrome, Firefox, and Edge.
+Supports .zip, .rar, .tar, .tar.gz, .tar.xz, and .tar.bz2 archive formats. Tested on Chrome, Firefox, Safari, and Edge.
 
 ## Getting Started
 
